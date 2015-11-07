@@ -1,0 +1,104 @@
+Name:                   lifeline
+Version:                0.0.0
+Author:                 Athan Clark <athan.clark@gmail.com>
+Maintainer:             Athan Clark <athan.clark@gmail.com>
+License:                BSD3
+License-File:           LICENSE
+-- Synopsis:
+-- Description:
+Cabal-Version:          >= 1.10
+Build-Type:             Simple
+
+Library
+  Default-Language:     Haskell2010
+  HS-Source-Dirs:       src
+  GHC-Options:          -Wall
+  Exposed-Modules:      Server
+                        Application
+                        Application.Types
+                        Pages.Home
+                        Routes
+                        Templates.NotFound
+                        Templates.Master
+                        Schema
+  Other-Modules:        Server.Internal
+                        Imports
+  Build-Depends:        base >= 4.6 && < 5
+                      , attoparsec
+                      , bytestring
+                      , containers
+                      , data-default
+                      , directory
+                      , http-types
+                      , lucid
+                      , markup
+                      , monad-control
+                      , monad-logger
+                      , mtl
+                      , nested-routes >= 6.0.0
+                      , path
+                      , persistent
+                      , persistent-template
+                      , persistent-sqlite
+                      , regex-compat
+                      , resourcet
+                      , text
+                      , transformers
+                      , time
+                      , urlpath
+                      , wai
+                      , wai-transformers >= 0.0.2
+                      , wai-extra
+                      , webpage
+
+Executable lifeline
+  Default-Language:     Haskell2010
+  HS-Source-Dirs:       src
+  GHC-Options:          -Wall
+  Main-Is:              Main.hs
+  Build-Depends:        base >= 4 && < 5
+                      , attoparsec
+                      , aeson
+                      , bytestring
+                      , containers
+                      , directory
+                      , data-default
+                      , http-types
+                      , lucid
+                      , markup
+                      , monad-control
+                      , monad-logger
+                      , mtl
+                      , nested-routes >= 3.1.0
+                      , optparse-applicative
+                      , path
+                      , persistent
+                      , persistent-template
+                      , persistent-sqlite
+                      , regex-compat
+                      , resourcet
+                      , text
+                      , transformers
+                      , time
+                      , urlpath
+                      , warp
+                      , wai-transformers
+                      , wai-extra
+                      , webpage
+                      , yaml
+
+Test-Suite spec
+  Type:                 exitcode-stdio-1.0
+  Default-Language:     Haskell2010
+  Hs-Source-Dirs:       src
+                      , test
+  Ghc-Options:          -Wall
+  Main-Is:              Spec.hs
+  Build-Depends:        base
+                      , hspec
+                      , QuickCheck
+                      , quickcheck-instances
+
+Source-Repository head
+  Type:                 git
+--  Location:
