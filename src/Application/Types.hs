@@ -2,10 +2,12 @@
     OverloadedStrings
   , ConstraintKinds
   , FlexibleContexts
+  , DeriveGeneric
   #-}
 
 module Application.Types where
 
+import Data.Aeson
 import qualified Data.Text as T
 import Data.Monoid
 import Data.Url
@@ -13,6 +15,10 @@ import Control.Monad.Logger
 import Control.Monad.Trans.Control
 import Control.Monad.Reader
 
+import GHC.Generics
+
+
+-- * Monad Stack
 
 type AppM a = LoggingT (ReaderT Env IO) a
 
@@ -33,6 +39,47 @@ type MonadApp m =
   )
 
 
+-- * HTTP Data
+
+data Complaint = DrugC
+               | GangC
+               | SexC
+               | AbuseC
+               | GeneralC String
+  deriving (Show, Eq, Ord, Generic)
+
+instance ToJSON   Complaint where
+instance FromJSON Complaint where
+
+data Location = Location
+  { locLong :: Double
+  , locLat  :: Double
+  } deriving (Show, Eq, Ord, Generic)
+
+instance ToJSON   Location where
+instance FromJSON Location where
+
+data NewAPI = NewAPI
+  { newComplaint :: Complaint
+  , newLocation  :: Location
+  } deriving (Show, Eq, Ord, Generic)
+
+instance ToJSON   NewAPI where
+instance FromJSON NewAPI where
+
+-- ** Upload Data
+
+data UploadData =
+    UploadNew NewAPI
+  deriving (Show, Eq, Ord)
+
+data UploadError =
+    FailedJSONParse
+  deriving (Show, Eq, Ord)
+
+
+-- * Available Data
+
 -- The environment accessible from our application
 data Env = Env
   { envHostname :: String
@@ -48,8 +95,7 @@ data MainNav = HomeNav
 
 data GlobalState = GlobalState
   { mainNav :: MainNav
-  }
-  deriving (Show, Eq)
+  } deriving (Show, Eq)
 
 appendActiveWhen :: GlobalState -> MainNav -> T.Text -> T.Text
 appendActiveWhen (GlobalState HomeNav) HomeNav c = c <> " active"

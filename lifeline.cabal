@@ -24,6 +24,7 @@ Library
   Other-Modules:        Server.Internal
                         Imports
   Build-Depends:        base >= 4.6 && < 5
+                      , aeson
                       , attoparsec
                       , bytestring
                       , containers
@@ -35,7 +36,7 @@ Library
                       , monad-control
                       , monad-logger
                       , mtl
-                      , nested-routes >= 6.0.0
+                      , nested-routes >= 6.0.0.1
                       , path
                       , persistent
                       , persistent-template

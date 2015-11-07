@@ -45,5 +45,5 @@ staticLayer app req respond = do
         file = toFilePath (b </> f)
     fileExists <- liftIO (doesFileExist file)
     if fileExists
-        then liftIO $ respond $ responseFile status200 [] file Nothing
+        then respond $ responseFile status200 [] file Nothing
         else app req respond
