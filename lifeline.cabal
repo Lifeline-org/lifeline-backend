@@ -17,8 +17,8 @@ Library
                         Application
                         Application.Types
                         Pages.Home
+                        Pages.NotFound
                         Routes
-                        Templates.NotFound
                         Templates.Master
                         Schema
   Other-Modules:        Server.Internal
@@ -30,23 +30,25 @@ Library
                       , containers
                       , data-default
                       , directory
+                      , exceptions
                       , http-types
                       , lucid
-                      , markup
+                      , markup >= 2.0.0
                       , monad-control
                       , monad-logger
                       , mtl
                       , nested-routes >= 6.0.0.1
-                      , path
+                      , path-extra >= 0.0.1
                       , persistent
                       , persistent-template
                       , persistent-sqlite
                       , regex-compat
                       , resourcet
+                      , stm
                       , text
                       , transformers
                       , time
-                      , urlpath
+                      , urlpath >= 3.2.1
                       , wai
                       , wai-transformers >= 0.0.2
                       , wai-extra
@@ -57,6 +59,15 @@ Executable lifeline
   HS-Source-Dirs:       src
   GHC-Options:          -Wall
   Main-Is:              Main.hs
+  Other-Modules:        Application
+                        Application.Types
+                        Application.Types.HTTP
+                        Imports
+                        Pages.Home
+                        Pages.NotFound
+                        Routes
+                        Schema
+                        Templates.Master
   Build-Depends:        base >= 4 && < 5
                       , attoparsec
                       , aeson
@@ -64,6 +75,7 @@ Executable lifeline
                       , containers
                       , directory
                       , data-default
+                      , exceptions
                       , http-types
                       , lucid
                       , markup
@@ -72,7 +84,7 @@ Executable lifeline
                       , mtl
                       , nested-routes >= 3.1.0
                       , optparse-applicative
-                      , path
+                      , path-extra
                       , persistent
                       , persistent-template
                       , persistent-sqlite

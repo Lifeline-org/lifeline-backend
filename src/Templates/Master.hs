@@ -27,7 +27,7 @@ htmlLight :: ( MonadApp m
                -> HtmlT (AppTemplateT m) a
                -> FileExtListenerT (MiddlewareT m) m ()
 htmlLight s content = do
-  hostname <- lift $ (T.pack . envHostname) <$> ask
+  hostname <- envAuthority <$> lift ask
   bs <- lift $ runUrlReader (renderBST content) hostname
   bytestringStatus Html s [("Content-Type","text/html")] bs
 

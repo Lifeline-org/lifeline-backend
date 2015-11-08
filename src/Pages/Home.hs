@@ -1,21 +1,27 @@
 {-# LANGUAGE
     OverloadedStrings
   , ExtendedDefaultRules
+  , FlexibleContexts
   #-}
 
 module Pages.Home where
 
+import Application.Types
+
 import Data.Url
+import Path.Extended
 import Lucid
 import qualified Data.Text as T
 
 import Control.Monad.Trans
 
 
-homePage :: Monad m => HtmlT (AbsoluteUrlT T.Text m) ()
+homePage :: ( MonadApp m
+            ) => HtmlT m ()
 homePage = do
-  newPackageLink <- lift $ plainUrl "packages/new"
-  form_ [action_ newPackageLink, method_ "POST"] $ do
+  location <- fromPath <$> lift (parseAbsFile "/packages/new")
+  link <- locUrl location
+  form_ [action_ (T.pack link), method_ "POST"] $ do
     div_ [] $ do
       label_ [for_ "packageName"] "Name: "
       input_ [name_ "packageName", type_ "text"]

@@ -19,7 +19,8 @@ import Database.Persist.Sql (runMigration)
 
 import System.Directory
 import GHC.Generics
-import Path
+import Path.Extended
+import Data.Url
 
 import Data.Maybe
 import Data.Default
@@ -35,7 +36,7 @@ data AppOpts = AppOpts
   , host   :: Maybe String
   , cwd    :: Maybe FilePath
   , static :: Maybe FilePath
-  } deriving Generic
+  } deriving (Show, Eq, Generic)
 
 instance Monoid AppOpts where
   mempty = AppOpts Nothing Nothing Nothing Nothing
@@ -80,7 +81,8 @@ appOpts = AppOpts
 -- | Command-line options
 data App = App
   { options :: AppOpts
-  , configPath :: Maybe String }
+  , configPath :: Maybe String
+  } deriving (Show, Eq)
 
 app :: Parser App
 app = App
@@ -150,6 +152,4 @@ entry port env = do
 -- @def@ beforehand.
 appOptsToEnv :: AppOpts -> Env
 appOptsToEnv (AppOpts (Just p) (Just h) (Just c) (Just s)) =
-  if p == 80
-  then Env h c s
-  else Env (h <> ":" <> show p) c s
+  Env (UrlAuthority "http" True Nothing h (p <$ guard (p /= 80))) c s

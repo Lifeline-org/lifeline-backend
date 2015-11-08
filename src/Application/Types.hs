@@ -1,21 +1,48 @@
 {-# LANGUAGE
-    OverloadedStrings
+    DeriveGeneric
+  , TemplateHaskell
   , ConstraintKinds
   , FlexibleContexts
-  , DeriveGeneric
+  , FlexibleInstances
+  , OverloadedStrings
+  , StandaloneDeriving
+  , MultiParamTypeClasses
   #-}
 
-module Application.Types where
+module Application.Types
+  ( module X
+  , AppM
+  , runApp
+  , AppTemplateT
+  , runAppTemplate
+  , MonadApp
+  , Env (..)
+  , MainNav (..)
+  , GlobalState (..)
+  , appendActiveWhen
+  ) where
 
-import Data.Aeson
+import Application.Types.HTTP as X
+
+import Path.Extended
 import qualified Data.Text as T
 import Data.Monoid
 import Data.Url
 import Control.Monad.Logger
 import Control.Monad.Trans.Control
 import Control.Monad.Reader
+import Control.Monad.Catch
 
-import GHC.Generics
+import Lucid
+
+-- FIXME: orphan
+
+instance ( Monad m
+         , MonadUrl b m
+         ) => MonadUrl b (HtmlT m) where
+  pathUrl   = lift . pathUrl
+  locUrl    = lift . locUrl
+  symbolUrl = lift . symbolUrl
 
 
 -- * Monad Stack
@@ -25,66 +52,29 @@ type AppM a = LoggingT (ReaderT Env IO) a
 runApp :: AppM a -> Env -> IO a
 runApp hs env = runReaderT (runStderrLoggingT hs) env
 
-type AppTemplateT m = AbsoluteUrlT T.Text m
+type AppTemplateT m = AbsoluteUrlT m
 
-runAppTemplate :: AppTemplateT m a -> T.Text -> m a
+runAppTemplate :: AppTemplateT m a -> UrlAuthority -> m a
 runAppTemplate hs hostname = runAbsoluteUrlT hs hostname
 
 
 type MonadApp m =
-  ( MonadReader Env m
-  , MonadIO m
-  , MonadBaseControl IO m
+  ( MonadIO m
+  , MonadThrow m
   , MonadLogger m
+  , MonadUrl Abs m
+  , MonadReader Env m
+  , MonadBaseControl IO m
   )
-
-
--- * HTTP Data
-
-data Complaint = DrugC
-               | GangC
-               | SexC
-               | AbuseC
-               | GeneralC String
-  deriving (Show, Eq, Ord, Generic)
-
-instance ToJSON   Complaint where
-instance FromJSON Complaint where
-
-data Location = Location
-  { locLong :: Double
-  , locLat  :: Double
-  } deriving (Show, Eq, Ord, Generic)
-
-instance ToJSON   Location where
-instance FromJSON Location where
-
-data NewAPI = NewAPI
-  { newComplaint :: Complaint
-  , newLocation  :: Location
-  } deriving (Show, Eq, Ord, Generic)
-
-instance ToJSON   NewAPI where
-instance FromJSON NewAPI where
-
--- ** Upload Data
-
-data UploadData =
-    UploadNew NewAPI
-  deriving (Show, Eq, Ord)
-
-data UploadError =
-    FailedJSONParse
-  deriving (Show, Eq, Ord)
 
 
 -- * Available Data
 
 -- The environment accessible from our application
 data Env = Env
-  { envHostname :: String
-  , envCwd      :: FilePath -- ^ for File Processing
-  , envStatic   :: FilePath
+  { envAuthority :: UrlAuthority
+  , envCwd       :: FilePath -- ^ for File Processing
+  , envStatic    :: FilePath
   } deriving (Show, Eq)
 
 -- | Data type representing top navigation bar
