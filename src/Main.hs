@@ -26,6 +26,7 @@ import Data.Maybe
 import Data.Default
 import Data.Monoid
 import Control.Monad
+import Control.Monad.IO.Class
 
 
 -- * Options Parsing
@@ -125,7 +126,8 @@ main = do
   case (cwdExists,staticExists) of
     (False,_) -> error $ "--cwd argument `"    <> cwdDir    <> "` does not exist"
     (_,False) -> error $ "--static argument `" <> staticDir <> "` does not exist"
-    _ -> entry (fromJust $ port config) $ appOptsToEnv config
+    _ -> do liftIO (print config)
+            entry (fromJust $ port config) $ appOptsToEnv config
   where
     opts :: ParserInfo App
     opts = info (helper <*> app)
@@ -137,6 +139,7 @@ main = do
 entry :: Int -> Env -> IO ()
 entry port env = do
   runApp (runDB $ runMigration migrateAll) env
+  liftIO (print env)
   run port $
       gzip def
     $ logStdoutDev
@@ -152,4 +155,5 @@ entry port env = do
 -- @def@ beforehand.
 appOptsToEnv :: AppOpts -> Env
 appOptsToEnv (AppOpts (Just p) (Just h) (Just c) (Just s)) =
-  Env (UrlAuthority "http" True Nothing h (p <$ guard (p /= 80))) c s
+  Env (UrlAuthority "http" True Nothing h (p <$ guard (p /= 80)))
+    c s

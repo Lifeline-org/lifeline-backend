@@ -20,6 +20,7 @@ Library
                         Pages.NotFound
                         Routes
                         Templates.Master
+                        Templates.MainStyles
                         Schema
   Other-Modules:        Server.Internal
                         Imports
@@ -33,22 +34,24 @@ Library
                       , exceptions
                       , http-types
                       , lucid
-                      , markup >= 2.0.0
+                      , markup >= 3.0.0
+                      , mmorph
                       , monad-control
                       , monad-logger
                       , mtl
-                      , nested-routes >= 6.0.0.1
+                      , nested-routes >= 6.1.0
                       , path-extra >= 0.0.1
                       , persistent
                       , persistent-template
                       , persistent-sqlite
                       , regex-compat
                       , resourcet
+                      , shakespeare
                       , stm
                       , text
                       , transformers
                       , time
-                      , urlpath >= 3.2.1
+                      , urlpath >= 4.1.0
                       , wai
                       , wai-transformers >= 0.0.2
                       , wai-extra
@@ -79,10 +82,11 @@ Executable lifeline
                       , http-types
                       , lucid
                       , markup
+                      , mmorph
                       , monad-control
                       , monad-logger
                       , mtl
-                      , nested-routes >= 3.1.0
+                      , nested-routes
                       , optparse-applicative
                       , path-extra
                       , persistent
@@ -90,6 +94,7 @@ Executable lifeline
                       , persistent-sqlite
                       , regex-compat
                       , resourcet
+                      , shakespeare
                       , text
                       , transformers
                       , time

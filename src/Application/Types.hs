@@ -17,8 +17,7 @@ module Application.Types
   , runAppTemplate
   , MonadApp
   , Env (..)
-  , MainNav (..)
-  , GlobalState (..)
+  , AppLink (..)
   , appendActiveWhen
   ) where
 
@@ -32,17 +31,6 @@ import Control.Monad.Logger
 import Control.Monad.Trans.Control
 import Control.Monad.Reader
 import Control.Monad.Catch
-
-import Lucid
-
--- FIXME: orphan
-
-instance ( Monad m
-         , MonadUrl b m
-         ) => MonadUrl b (HtmlT m) where
-  pathUrl   = lift . pathUrl
-  locUrl    = lift . locUrl
-  symbolUrl = lift . symbolUrl
 
 
 -- * Monad Stack
@@ -62,7 +50,7 @@ type MonadApp m =
   ( MonadIO m
   , MonadThrow m
   , MonadLogger m
-  , MonadUrl Abs m
+  , MonadUrl Abs File m
   , MonadReader Env m
   , MonadBaseControl IO m
   )
@@ -77,18 +65,23 @@ data Env = Env
   , envStatic    :: FilePath
   } deriving (Show, Eq)
 
--- | Data type representing top navigation bar
-data MainNav = HomeNav
-             | AboutNav
-             | ContactNav
+-- | Data type representing intra-site links
+data AppLink = AppHome
+             | AppNew
+             | AppGet
+             | JQuery
+             | JQueryMMenuCss
+             | JQueryMMenuDragOpenCss
   deriving (Show, Eq)
 
-data GlobalState = GlobalState
-  { mainNav :: MainNav
-  } deriving (Show, Eq)
+instance ToLocation AppLink Abs File where
+  toLocation AppHome = fromPath <$> parseAbsFile "/index"
+  toLocation AppNew = fromPath <$> parseAbsFile "/new"
+  toLocation AppGet = fromPath <$> parseAbsFile "/get"
+  toLocation JQuery =  fromPath <$> parseAbsFile "/static/vendor/webcomponentsjs/webcomponents.js"
+  toLocation JQueryMMenuCss = fromPath <$> parseAbsFile "/static/vendor/jQuery.mmenu/dist/core/css/jquery.mmenu.css"
+  toLocation JQueryMMenuDragOpenCss = fromPath <$> parseAbsFile "/static/vendor/jQuery.mmenu/dist/addons/css/jquery.mmenu.dragopen.css"
 
-appendActiveWhen :: GlobalState -> MainNav -> T.Text -> T.Text
-appendActiveWhen (GlobalState HomeNav) HomeNav c = c <> " active"
-appendActiveWhen (GlobalState AboutNav) AboutNav c = c <> " active"
-appendActiveWhen (GlobalState ContactNav) ContactNav c = c <> " active"
-appendActiveWhen _ _ c = c
+appendActiveWhen :: AppLink -> AppLink -> T.Text -> T.Text
+appendActiveWhen x y c | x == y    = c <> " active"
+                       | otherwise = c

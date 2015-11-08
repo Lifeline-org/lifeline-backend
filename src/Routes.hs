@@ -28,7 +28,7 @@ routes = do
   notFoundAction notFoundHandle
   where
     homeHandle = get $ do
-      html (GlobalState HomeNav) homePage
+      html (Just AppHome) homePage
 
     newHandle = post uploadParams handleUploaded
       where

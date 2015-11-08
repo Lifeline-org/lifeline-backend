@@ -7,6 +7,7 @@
 module Pages.NotFound where
 
 import Application.Types
+import Templates.Master
 
 import Path.Extended
 import Data.Url
@@ -18,17 +19,21 @@ import Lucid.Base
 import Data.Monoid
 import Data.Default
 import Control.Monad.Trans
+import Control.Monad.Reader (ask)
 
 
 notFoundContent :: ( MonadApp m
                    ) => HtmlT m ()
 notFoundContent = do
-  root <- T.pack <$> (pathUrl =<< lift (parseAbsDir "/"))
+  h <- envAuthority <$> lift ask
+  loc <- lift $ toLocation AppHome
+  root <- T.pack <$> lift (locUrl loc)
 
-  let page = def { metaVars = meta_ [ makeAttribute "http-equiv" "refresh"
-                                    , content_ $ "3;url=" <> root
-                                    ]
-                 }
+  let page = masterPage { metaVars = do metaVars masterPage
+                                        meta_ [ makeAttribute "http-equiv" "refresh"
+                                              , content_ $ "3;url=" <> root
+                                              ]
+                        }
 
   template page $
     div_ [] $ do

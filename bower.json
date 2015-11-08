@@ -1,0 +1,26 @@
+{
+  "name": "lifeline",
+  "version": "0.0.0",
+  "homepage": "https://github.com/Lifeline-org/lifeline",
+  "authors": [
+    "Athan Clark <athan.clark@gmail.com>"
+  ],
+  "description": "Broadcast witness",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "*",
+    "jQuery.mmenu": "*",
+    "hammer.js": "*"
+  }
+}

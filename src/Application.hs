@@ -39,10 +39,8 @@ staticLayer :: MonadApp m => MiddlewareT m
 staticLayer app req respond = do
     let fileRequested = T.unpack . T.intercalate "/" $ pathInfo req
     basePath <- envStatic <$> ask
-    b <- liftIO $ parseAbsDir basePath
-    f <- liftIO $ parseRelFile fileRequested
     let file :: FilePath
-        file = toFilePath (b </> f)
+        file = basePath ++ "/" ++ fileRequested
     fileExists <- liftIO (doesFileExist file)
     if fileExists
         then respond $ responseFile status200 [] file Nothing
