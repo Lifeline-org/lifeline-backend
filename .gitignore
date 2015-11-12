@@ -20,3 +20,5 @@ stack.yaml
 Dockerfile
 target/
 TAGS
+
+static/vendor/
