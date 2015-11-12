@@ -18,6 +18,10 @@ packages:
     git: https://github.com/athanclark/urlpath
     commit: 6fbd422860d16e5335272689208602cc2a2385fd
   extra-dep: true
+- location:
+    git: https://github.com/athanclark/markup
+    commit: 1369f4e5f76c0cb4bdf2de49971d931e85f468c5
+  extra-dep: true
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
 extra-deps:

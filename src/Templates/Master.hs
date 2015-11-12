@@ -67,7 +67,6 @@ masterPage =
     styles' = do
       h <- envAuthority <$> lift ask
       hoist (flip runGroundedUrlT h) jqueryMMenuCss
-      hoist (flip runGroundedUrlT h) jqueryMMenuDragOpenCss
       inlineStyles
 
 
@@ -82,10 +81,6 @@ masterPage =
     jqueryMMenuCss = do
       mmenu <- lift $ toLocation JQueryMMenuCss
       deploy Css Locally mmenu
-
-    jqueryMMenuDragOpenCss :: ( MonadApp m
-                              ) => HtmlT (GroundedUrlT m) ()
-    jqueryMMenuDragOpenCss = do
       dragOpen <- lift $ toLocation JQueryMMenuDragOpenCss
       deploy Css Locally dragOpen
 
