@@ -34,13 +34,13 @@ Library
                       , exceptions
                       , http-types
                       , lucid
-                      , markup >= 3.0.0
+                      , markup >= 3.1.0
                       , mmorph
                       , monad-control
                       , monad-logger
                       , mtl
                       , nested-routes >= 6.1.0
-                      , path-extra >= 0.0.1
+                      , path-extra >= 0.0.2
                       , persistent
                       , persistent-template
                       , persistent-sqlite
