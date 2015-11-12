@@ -34,7 +34,6 @@ htmlLight :: ( MonadApp m
                -> FileExtListenerT (MiddlewareT m) m ()
 htmlLight s content = do
   hostname <- envAuthority <$> lift ask
-  liftIO (putStrLn "now here")
   bs <- lift $ runAppTemplate (renderBST content) hostname
   bytestringStatus Html s [("Content-Type","text/html")] bs
 
@@ -61,32 +60,17 @@ masterPage =
           }
   where
     beforeStylesScripts' = do
-      h <- envAuthority <$> lift ask
-      hoist (flip runGroundedUrlT h) localStylesScripts
+      hoist runGroundedUrlT $ do
+        loc <- lift $ toLocation JQuery
+        deploy JavaScript Locally loc
 
     styles' = do
-      h <- envAuthority <$> lift ask
-      hoist (flip runGroundedUrlT h) jqueryMMenuCss
-      inlineStyles
-
-
-    localStylesScripts :: ( MonadApp m
-                          ) => HtmlT (GroundedUrlT m) ()
-    localStylesScripts = do
-      loc <- lift $ toLocation JQuery
-      deploy JavaScript Locally loc
-
-    jqueryMMenuCss :: ( MonadApp m
-                      ) => HtmlT (GroundedUrlT m) ()
-    jqueryMMenuCss = do
-      mmenu <- lift $ toLocation JQueryMMenuCss
-      deploy Css Locally mmenu
-      dragOpen <- lift $ toLocation JQueryMMenuDragOpenCss
-      deploy Css Locally dragOpen
-
-    inlineStyles :: ( MonadApp m
-                    ) => (HtmlT m ())
-    inlineStyles = deploy Css Inline mainStyles
+      hoist runGroundedUrlT $ do
+        mmenu <- lift $ toLocation JQueryMMenuCss
+        deploy Css Locally mmenu
+        dragOpen <- lift $ toLocation JQueryMMenuDragOpenCss
+        deploy Css Locally dragOpen
+      deploy Css Inline mainStyles
 
     metaVars' = do
       meta_ [ name_ "viewport"

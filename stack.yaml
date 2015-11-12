@@ -16,7 +16,7 @@ packages:
   extra-dep: true
 - location:
     git: https://github.com/athanclark/urlpath
-    commit: 6fbd422860d16e5335272689208602cc2a2385fd
+    commit: dd4ae56746016fcb75e68d977da16e5f781356b1
   extra-dep: true
 - location:
     git: https://github.com/athanclark/markup

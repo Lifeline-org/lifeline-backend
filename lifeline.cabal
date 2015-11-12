@@ -51,7 +51,7 @@ Library
                       , text
                       , transformers
                       , time
-                      , urlpath >= 4.1.0
+                      , urlpath >= 4.2.0
                       , wai
                       , wai-transformers >= 0.0.2
                       , wai-extra
