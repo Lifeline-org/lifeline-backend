@@ -11,7 +11,6 @@ import Routes
 import qualified Data.Text as T
 import Control.Monad.Reader
 import System.Directory
-import Path.Extended
 
 
 

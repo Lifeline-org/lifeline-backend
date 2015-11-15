@@ -20,14 +20,14 @@ import Control.Monad.Trans
 homePage :: ( MonadApp m
             ) => HtmlT m ()
 homePage = do
-  liftIO (putStrLn "nigga wut")
-  (loc :: P.Location Abs File) <- lift $ toLocation AppNew
-  link <- lift $ locUrl loc
-  form_ [action_ (T.pack link), method_ "POST"] $ do
+  newClaimLoc <- lift $ toLocation AppNew
+  newClaim    <- lift $ locUrl newClaimLoc
+
+  form_ [action_ (T.pack newClaim), method_ "POST"] $ do
     div_ [] $ do
-      label_ [for_ "packageName"] "Name: "
-      input_ [name_ "packageName", type_ "text"]
+      label_ [for_ "name"] "Name: "
+      input_ [name_ "name", type_ "text"]
     div_ [] $ do
-      label_ [for_ "packageSynopsis"] "Synopsis: "
-      input_ [name_ "packageSynopsis", type_ "text"]
+      label_ [for_ "synopsis"] "Synopsis: "
+      input_ [name_ "synopsis", type_ "text"]
     input_ [type_ "submit", value_ "Submit"]

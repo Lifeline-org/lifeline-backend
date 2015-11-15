@@ -126,8 +126,7 @@ main = do
   case (cwdExists,staticExists) of
     (False,_) -> error $ "--cwd argument `"    <> cwdDir    <> "` does not exist"
     (_,False) -> error $ "--static argument `" <> staticDir <> "` does not exist"
-    _ -> do liftIO (print config)
-            entry (fromJust $ port config) $ appOptsToEnv config
+    _ -> entry (fromJust $ port config) $ appOptsToEnv config
   where
     opts :: ParserInfo App
     opts = info (helper <*> app)
@@ -138,8 +137,13 @@ main = do
 -- | Entry point, post options parsing
 entry :: Int -> Env -> IO ()
 entry port env = do
+  liftIO $ do
+    putStrLn "LifeLine running..."
+    putStrLn $ "  - hostname:    " ++ show (urlHost $ envAuthority env)
+    putStrLn $ "  - port:        " ++ show (urlPort $ envAuthority env)
+    putStrLn $ "  - working dir: " ++ show (envCwd env)
+    putStrLn $ "  - static dir:  " ++ show (envStatic env)
   runApp (runDB $ runMigration migrateAll) env
-  liftIO (print env)
   run port $
       gzip def
     $ logStdoutDev

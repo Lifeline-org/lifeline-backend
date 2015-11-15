@@ -40,18 +40,20 @@ Library
                       , monad-logger
                       , mtl
                       , nested-routes >= 6.1.0
-                      , path-extra >= 0.0.2
+                      , path-extra >= 0.0.3
                       , persistent
                       , persistent-template
                       , persistent-sqlite
                       , regex-compat
                       , resourcet
                       , shakespeare
+                      , split
                       , stm
                       , text
                       , transformers
                       , time
-                      , urlpath >= 4.2.0
+                      , urlpath >= 5.0.0
+                      , utf8-string
                       , wai
                       , wai-transformers >= 0.0.2
                       , wai-extra
@@ -95,10 +97,12 @@ Executable lifeline
                       , regex-compat
                       , resourcet
                       , shakespeare
+                      , split
                       , text
                       , transformers
                       , time
                       , urlpath
+                      , utf8-string
                       , warp
                       , wai-transformers
                       , wai-extra

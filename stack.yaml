@@ -16,24 +16,33 @@ packages:
   extra-dep: true
 - location:
     git: https://github.com/athanclark/urlpath
-    commit: dd4ae56746016fcb75e68d977da16e5f781356b1
+    commit: b6b80a68b08aadd1a2eb7f96358bfc4de3da30a7
   extra-dep: true
 - location:
     git: https://github.com/athanclark/markup
     commit: 1369f4e5f76c0cb4bdf2de49971d931e85f468c5
   extra-dep: true
+- location:
+    git: https://github.com/athanclark/path-extra
+    commit: 5e510a949c5bcd79ac662b622a371c3403ffc474
+  extra-dep: true
+- location:
+    git: https://github.com/athanclark/urlencoded-simple
+    commit: 325580e3855f689b304395b26d913cd152aaa3e7
+  extra-dep: true
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
 extra-deps:
   - nested-routes-6.1.0
-  - urlpath-4.1.0
+  - urlpath-5.0.0
+  - urlencoded-0.4.1
   - markup-3.1.0
   - wai-transformers-0.0.3
   - wai-middleware-content-type-0.0.3.1
   - wai-middleware-verbs-0.0.4
   - wai-util-0.8
   - http-accept-0.2
-  - path-extra-0.0.2
+  - path-extra-0.0.3
 
 # Override default flag values for local packages and extra-deps
 flags: {}

@@ -14,7 +14,11 @@ import Schema
 
 import Data.Aeson
 import Data.Monoid
-import qualified Data.Text.Lazy as LT
+import Data.List.Split
+import qualified Data.Text.Lazy       as LT
+import qualified Data.ByteString      as BS
+import qualified Data.ByteString.UTF8 as BS
+import qualified Data.ByteString.Lazy as BSL
 import Database.Persist hiding (get)
 import Control.Monad.Except
 
@@ -34,14 +38,27 @@ routes = do
       where
         uploadParams req = do
           unparsed <- liftIO (strictRequestBody req)
-          case decode unparsed of
-            Nothing -> throwError (Just FailedJSONParse)
-            Just d  -> return (UploadNew d)
+          liftIO (print unparsed) -- todo: attoparsec urlencoded parser
+          let unparsedBS = BSL.toStrict unparsed
+              string     = BS.toString unparsedBS
+          if any (== BS.replacement_char) string
+          then case decode unparsed of
+                 Nothing -> throwError (Just FailedJSONParse)
+                 Just d  -> return (UploadNew d)
+          else do let decoded = urlDecode True unparsedBS
+                  liftIO (print decoded)
+                  let getVal s = case splitOn "=" s of
+                                   [k]   -> (k, Nothing)
+                                   [k,v] -> (k, Just v)
+                                   _     -> error "more than one value?"
+                      parsed = map getVal (splitOn "&" (BS.toString decoded))
+                  liftIO (print parsed)
+                  return undefined
 
         handleUploaded (Left Nothing) = do
-          text "dun goofed"
+          textStatus status400 "dun goofed"
         handleUploaded (Left (Just e)) = do
-          text $ "dun goofed - " <> LT.pack (show e)
+          textStatus status400 $ "dun goofed - " <> LT.pack (show e)
         handleUploaded (Right (UploadNew d)) = do
           let loc = newLocation d
           lift . runDB . insert $
