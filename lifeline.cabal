@@ -2,9 +2,9 @@ Name:                   lifeline
 Version:                0.0.0
 Author:                 Athan Clark <athan.clark@gmail.com>
 Maintainer:             Athan Clark <athan.clark@gmail.com>
-License:                BSD3
+License:                GPLv3
 License-File:           LICENSE
--- Synopsis:
+Synopsis:               An emergency broadcasting system
 -- Description:
 Cabal-Version:          >= 1.10
 Build-Type:             Simple
@@ -24,7 +24,7 @@ Library
                         Schema
   Other-Modules:        Server.Internal
                         Imports
-  Build-Depends:        base >= 4.6 && < 5
+  Build-Depends:        base >= 4.8 && < 5
                       , aeson
                       , attoparsec
                       , bytestring

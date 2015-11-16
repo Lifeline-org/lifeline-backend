@@ -138,7 +138,13 @@ main = do
 entry :: Int -> Env -> IO ()
 entry port env = do
   liftIO $ do
-    putStrLn "LifeLine running..."
+    putStrLn "LifeLine  Copyright (C) 2015  Athan Lawrence Clark"
+    putStrLn "This program comes with ABSOLUTELY NO WARRANTY."
+    putStrLn "This is free software, and you are welcome to redistribute it"
+    putStrLn "under certain conditions; view the GNU Public License version 3"
+    putStrLn "for details."
+    putStrLn ""
+    putStrLn "LifeLine running with config:"
     putStrLn $ "  - hostname:    " ++ show (urlHost $ envAuthority env)
     putStrLn $ "  - port:        " ++ show (urlPort $ envAuthority env)
     putStrLn $ "  - working dir: " ++ show (envCwd env)
