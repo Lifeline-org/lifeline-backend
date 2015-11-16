@@ -12,6 +12,7 @@ import Database.Persist.TH
 import GHC.Generics
 import qualified Data.Text as T
 import Control.Monad
+import Control.Applicative
 
 
 -- * HTTP Data
@@ -35,6 +36,7 @@ instance FromJSON Complaint where
                        | s == "gangs"    = pure GangC
                        | s == "sex"      = pure SexC
                        | s == "violence" = pure ViolenceC
+  parseJSON _ = empty
 
 complaintFromString :: String -> Maybe Complaint
 complaintFromString s | s == "drugs"    = pure DrugC
@@ -59,6 +61,7 @@ instance ToJSON Location where
 instance FromJSON Location where
   parseJSON (Object v) =
     Location <$> v .: "long" <*> v .: "lat"
+  parseJSON _ = empty
 
 locationFromPairs :: [(String, Maybe String)] -> Maybe Location
 locationFromPairs xs = do
@@ -102,8 +105,8 @@ instance FromJSON NewAPI where
 newAPIFromPairs :: [(String, Maybe String)] -> Maybe NewAPI
 newAPIFromPairs xs = do
   complaint <- complaintFromString =<< join (lookup "complaint" xs)
-  location <- locationFromPairs xs
-  report <- reportFromPairs xs
+  location  <- locationFromPairs xs
+  report    <- reportFromPairs xs
   return $ NewAPI complaint location report
 
 
@@ -125,7 +128,6 @@ data UploadData =
   deriving (Show, Eq, Ord)
 
 data UploadError =
-    FailedJSONParse
-  | FailedURLEncodedParse
+    FailedParse
   deriving (Show, Eq, Ord)
 

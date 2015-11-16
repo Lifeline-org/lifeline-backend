@@ -19,18 +19,23 @@ module Application.Types
   , Env (..)
   , AppLink (..)
   , appendActiveWhen
+  , decodeUrl
   ) where
 
 import Application.Types.HTTP as X
 
 import Path.Extended
-import qualified Data.Text as T
+import qualified Data.Text            as T
+import qualified Data.ByteString      as BS
+import qualified Data.ByteString.UTF8 as BS
 import Data.Monoid
 import Data.Url
+import Data.List.Split
 import Control.Monad.Logger
 import Control.Monad.Trans.Control
 import Control.Monad.Reader
 import Control.Monad.Catch
+import Network.HTTP.Types (urlDecode)
 
 
 -- * Monad Stack
@@ -85,3 +90,16 @@ instance ToLocation AppLink Abs File where
 appendActiveWhen :: AppLink -> AppLink -> T.Text -> T.Text
 appendActiveWhen x y c | x == y    = c <> " active"
                        | otherwise = c
+
+
+decodeUrl :: Bool -> BS.ByteString -> [(String, Maybe String)]
+decodeUrl plus xs =
+  let getVal s = case splitOn "=" s of
+                   [k]   -> (k, Nothing)
+                   [k,v] -> (k, Just v)
+                   _     -> error "more than one value?"
+  in map getVal
+   . splitOn "&"
+   . BS.toString
+   $ urlDecode plus xs
+

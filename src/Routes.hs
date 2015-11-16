@@ -14,10 +14,7 @@ import Schema
 
 import Data.Aeson
 import Data.Monoid
-import Data.List.Split
 import qualified Data.Text.Lazy       as LT
-import qualified Data.ByteString      as BS
-import qualified Data.ByteString.UTF8 as BS
 import qualified Data.ByteString.Lazy as BSL
 import Database.Persist hiding (get)
 import Control.Monad.Except
@@ -39,21 +36,11 @@ routes = do
         uploadParams req = do
           unparsed <- liftIO (strictRequestBody req)
           liftIO (print unparsed) -- todo: attoparsec urlencoded parser
-          let unparsedBS = BSL.toStrict unparsed
-              string     = BS.toString unparsedBS
-          if any (== BS.replacement_char) string
-          then case decode unparsed of
-                 Nothing -> throwError (Just FailedJSONParse)
-                 Just d  -> return (UploadNew d)
-          else do let decoded = urlDecode True unparsedBS
-                  liftIO (print decoded)
-                  let getVal s = case splitOn "=" s of
-                                   [k]   -> (k, Nothing)
-                                   [k,v] -> (k, Just v)
-                                   _     -> error "more than one value?"
-                      parsed = map getVal (splitOn "&" (BS.toString decoded))
-                  liftIO (print parsed)
-                  return undefined
+          case decode unparsed of
+            Nothing -> case newAPIFromPairs . decodeUrl True $ BSL.toStrict unparsed of
+                         Just d  -> return (UploadNew d)
+                         Nothing -> throwError (Just FailedParse)
+            Just d  -> return (UploadNew d)
 
         handleUploaded (Left Nothing) = do
           textStatus status400 "dun goofed"
@@ -73,7 +60,7 @@ routes = do
         uploadParams req = do
           unparsed <- liftIO (strictRequestBody req)
           case decode unparsed of
-            Nothing -> throwError (Just FailedJSONParse)
+            Nothing -> throwError (Just FailedParse)
             Just d  -> return (UploadGet d)
 
         handleUploaded (Left Nothing) = do
@@ -97,3 +84,4 @@ routes = do
     notFoundHandle = get $ do
       htmlLight status404 notFoundContent
       text "404 :("
+
